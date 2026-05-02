@@ -1,0 +1,168 @@
+{
+  "proyecto": {
+    "nombre": "Servicio OAuth2 con Consumo de API REST",
+    "descripcion": "Servicio Spring Boot con autenticación JWT que consume una API REST y devuelve 'Hola Mundo' en JSON solo si está autenticado",
+    "status": "✅ COMPLETADO Y FUNCIONAL"
+  },
+  "requisitos_implementados": [
+    "✅ Levantar un servicio (Spring Boot en puerto 8080)",
+    "✅ Con autenticación (OAuth2 + JWT con RS256)",
+    "✅ Que consuma una API REST gratuita (JSONPlaceholder)",
+    "✅ Que muestre 'Hola Mundo' en formato JSON",
+    "✅ SOLO SI ESTÁ AUTENTICADO (endpoint protegido)"
+  ],
+  "endpoints": {
+    "login": {
+      "metodo": "POST",
+      "ruta": "/api/auth/login",
+      "requiere_autenticacion": false,
+      "descripcion": "Obtener token JWT",
+      "ejemplo_request": {
+        "username": "user",
+        "password": "password"
+      },
+      "ejemplo_respuesta": {
+        "username": "user",
+        "roles": ["ROLE_USER"],
+        "token": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9...",
+        "message": "Login correcto"
+      }
+    },
+    "user_info": {
+      "metodo": "GET",
+      "ruta": "/api/auth/me",
+      "requiere_autenticacion": true,
+      "descripcion": "Información del usuario autenticado",
+      "ejemplo_respuesta": {
+        "username": "user",
+        "roles": ["ROLE_USER"],
+        "token": null,
+        "message": "Usuario autenticado"
+      }
+    },
+    "hola_mundo_protegido": {
+      "metodo": "GET",
+      "ruta": "/api/data/hola",
+      "requiere_autenticacion": true,
+      "protegido_por": "JWT Bearer Token",
+      "descripcion": "Devuelve 'Hola Mundo' (solo autenticado)",
+      "ejemplo_respuesta": {
+        "mensaje": "Hola Mundo",
+        "timestamp": "2026-05-02T10:30:45.123Z",
+        "apiExterna": "JSONPlaceholder",
+        "estado": "autenticado",
+        "usuario": "user"
+      },
+      "sin_autenticacion": {
+        "status": 401,
+        "respuesta": {
+          "error": "No autenticado"
+        }
+      }
+    }
+  },
+  "tecnologias": {
+    "framework": "Spring Boot 4.0.5",
+    "seguridad": "Spring Security OAuth2",
+    "autenticacion": "JWT con RS256",
+    "cliente_http": "RestTemplate",
+    "api_consumida": "JSONPlaceholder (gratuita)",
+    "lenguaje": "Java 21",
+    "gestor_dependencias": "Maven",
+    "puerto": 8080
+  },
+  "credenciales_prueba": {
+    "usuario": "user",
+    "password": "password"
+  },
+  "archivos_nuevos": [
+    {
+      "ruta": "src/main/java/com/example/demoAuth/controller/DataController.java",
+      "descripcion": "Endpoint protegido GET /api/data/hola"
+    },
+    {
+      "ruta": "src/main/java/com/example/demoAuth/service/ApiService.java",
+      "descripcion": "Servicio que consume JSONPlaceholder API"
+    }
+  ],
+  "archivos_modificados": [
+    {
+      "ruta": "src/main/java/com/example/demoAuth/security/SecurityConfig.java",
+      "cambios": [
+        "Agregado import de RestTemplate",
+        "Agregado bean @Bean RestTemplate"
+      ]
+    },
+    {
+      "ruta": "src/main/resources/application.properties",
+      "cambios": [
+        "server.port=8080",
+        "logging.level.root=INFO",
+        "spring.security.oauth2.resourceserver.jwt.issuer-uri"
+      ]
+    }
+  ],
+  "documentacion": {
+    "README.md": "Documentación principal y guía de inicio",
+    "EJEMPLOS.md": "Ejemplos de uso con curl y Postman",
+    "ESTRUCTURA.md": "Estructura completa del proyecto",
+    "RESUMEN.md": "Resumen ejecutivo del proyecto",
+    "CHECKLIST.md": "Checklist de requisitos implementados",
+    "RUNBOOK.md": "Guía paso a paso para ejecutar",
+    "ejemplos.json": "Este archivo con ejemplos"
+  },
+  "pasos_para_ejecutar": [
+    {
+      "paso": 1,
+      "descripcion": "Terminal 1 - Ejecutar el servicio",
+      "comando": "cd /workspaces/actividad_2/demoOAUTH2-master && mvn spring-boot:run"
+    },
+    {
+      "paso": 2,
+      "descripcion": "Terminal 2 - Hacer login",
+      "comando": "curl -X POST http://localhost:8080/api/auth/login -H 'Content-Type: application/json' -d '{\"username\":\"user\",\"password\":\"password\"}'"
+    },
+    {
+      "paso": 3,
+      "descripcion": "Copiar el token de la respuesta",
+      "nota": "Buscar el campo 'token' en la respuesta JSON"
+    },
+    {
+      "paso": 4,
+      "descripcion": "Usar el endpoint protegido",
+      "comando": "curl -H 'Authorization: Bearer {TOKEN}' http://localhost:8080/api/data/hola"
+    }
+  ],
+  "flujo_autenticacion": {
+    "tipo": "OAuth2 + JWT",
+    "paso_1": "Usuario envía credenciales a /api/auth/login",
+    "paso_2": "Servidor valida credenciales con UserDetailsService",
+    "paso_3": "Servidor genera JWT token con RS256",
+    "paso_4": "Servidor devuelve token al cliente",
+    "paso_5": "Cliente almacena token",
+    "paso_6": "Cliente incluye token en header: Authorization: Bearer {token}",
+    "paso_7": "Cliente accede a /api/data/hola",
+    "paso_8": "Servidor valida JWT",
+    "paso_9": "Si válido: Devuelve 'Hola Mundo' + datos usuario",
+    "paso_10": "Si inválido: Devuelve 401 Unauthorized"
+  },
+  "caracteristicas": [
+    "Autenticación OAuth2 con JWT",
+    "Tokens con expiración de 1 hora",
+    "Encriptación RS256 (asimétrica)",
+    "Consumo de API REST gratuita",
+    "Endpoint protegido por autenticación",
+    "Respuesta JSON con datos de usuario",
+    "Manejo de excepciones",
+    "Configuración modular"
+  ],
+  "proximos_pasos_opcionales": [
+    "Cambiar de In-Memory a Base de Datos",
+    "Implementar Refresh Token",
+    "Agregar más roles y permisos",
+    "Integrar con OpenID Connect",
+    "Implementar Rate Limiting",
+    "Agregar CORS",
+    "Usar WebClient en lugar de RestTemplate"
+  ]
+}
